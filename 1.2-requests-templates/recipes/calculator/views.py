@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.http import HttpResponse
+from django.urls import reverse
 
 DATA = {
     'omlet': {
@@ -19,6 +21,7 @@ DATA = {
     # можете добавить свои рецепты ;)
 }
 
+
 # Напишите ваш обработчик. Используйте DATA как источник данных
 # Результат - render(request, 'calculator/index.html', context)
 # В качестве контекста должен быть передан словарь с рецептом:
@@ -28,3 +31,43 @@ DATA = {
 #     'ингредиент2': количество2,
 #   }
 # }
+def main(request):
+    links = {
+        'omlet': reverse('omlet'),
+        'pasta': reverse('pasta'),
+        'buter': reverse('buter'),
+    }
+    return HttpResponse("<br>".join(f"<a href='{link}'>{name}</a>" for name, link in links.items()))
+
+
+def omlet(request):
+    servings = int(request.GET.get('servings', 1))
+
+    context = {
+        'recipe': {
+            ingredient: Quantity * servings for ingredient, Quantity in DATA['omlet'].items()
+        }
+    }
+    return render(request, 'calculator/index.html', context)
+
+
+def pasta(request):
+    servings = int(request.GET.get('servings', 1))
+
+    context = {
+        'recipe': {
+            ingredient: Quantity * servings for ingredient, Quantity in DATA['pasta'].items()
+        }
+    }
+    return render(request, 'calculator/index.html', context)
+
+
+def buter(request):
+    servings = int(request.GET.get('servings', 1))
+
+    context = {
+        'recipe': {
+            ingredient: Quantity * servings for ingredient, Quantity in DATA['buter'].items()
+        }
+    }
+    return render(request, 'calculator/index.html', context)
